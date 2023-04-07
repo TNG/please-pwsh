@@ -43,6 +43,10 @@ function Please {
     }
     else {
         $Command = Get-Command $Prompt
+        if ($Command.contains("I do not know")) {
+            Write-Host $Command
+            Return
+        }
     }
     $Action = Show-Menu $Command
     Invoke-Action $Action
@@ -61,7 +65,7 @@ function Test-ApiKey {
 }
 
 function Get-Command([string]$Prompt) {
-    $Role = "You translate the input given into PowerShell command. You may not use natural language, but only a PowerShell commands as answer."
+    $Role = "You translate the input given into PowerShell command. You may not use natural language, but only a PowerShell commands as answer. Do not use markdown. Do not quote the whole output. If you do not know the answer, answer only with 'I do not know'"
 
     $Payload = @{
         'model'    = "gpt-3.5-turbo"
