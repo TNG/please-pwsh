@@ -38,7 +38,7 @@ You need an [OpenAI Api Key](https://platform.openai.com/account/api-keys).
 
 ## Installation
 
-For now copy the module `PleaseCli` in one of your module folders and set the OpenAI Api Key as environment variable.
+For now copy the module `PleasePwsh` in one of your module folders and set the OpenAI Api Key as environment variable.
 - Find module folders with `$ENV:PSModulePath -Split ';'`
 - Set environment variable in PowerShell profile
   - Open profile `Code $PROFILE`
