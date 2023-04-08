@@ -1,6 +1,6 @@
 # Please CLI for PowerShell Core
 
-An AI helper script to create PowerShell commands. It is a copy of [Please CLI](https://github.com/TNG/please-cli/). 
+An AI helper script to create PowerShell commands. It is a copy of [Please CLI](https://github.com/TNG/please-cli/).
 
 The initial approach to `ChatGPT please convert the bash script to pwsh` did not work. So its a rewrite that still contains trace amounts of AI.
 
@@ -38,8 +38,11 @@ You need an [OpenAI API key](https://platform.openai.com/account/api-keys) and a
 
 ## Installation
 
-For now copy the folder `PleasePwsh` in one of your module folders and set the OpenAI API key as environment variable.
-- Find module folders with `$ENV:PSModulePath -Split ';'`
-- Set environment variable permanently in PowerShell profile
-  - Open profile `Code $PROFILE`
-  - Add a line `$ENV:OPENAI_API_KEY = <YOUR_API_KEY>`
+From the [PowerShell Gallery](https://www.powershellgallery.com/packages/PleasePwsh) with
+```
+Install-Module -Name PleasePwsh
+```
+
+Set the OpenAI API key as environment variable.
+- Open PowerShell profile: `Code $PROFILE`
+- Add a line with your API key: `$ENV:OPENAI_API_KEY = <YOUR_API_KEY>`
