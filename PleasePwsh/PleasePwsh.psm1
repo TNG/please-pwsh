@@ -24,7 +24,7 @@ If this switch is provided, the script will return a brief explanation of the sp
 .EXAMPLE
 PS> Please "Get all files in current directory that are larger than 1 MB"
 
-PS> Please -Explain "Get-ChildItem -Path 'C:\'" 
+PS> Please -Explain "Get-ChildItem -Path 'C:\'"
 #>
 function Please {
     [CmdletBinding()]
@@ -33,18 +33,18 @@ function Please {
         [Alias("e")][switch]$Explain
 
     )
-    
+
     Test-ApiKey
 
     if ($Explain) {
         $Explanation = Get-CommandExplanation $Prompt
-        Write-Host "`u{261D} $Explanation"
+        Write-Output "`u{261D} $Explanation"
         $Command = $Prompt
     }
     else {
-        $Command = Get-Command $Prompt
+        $Command = Get-PwshCommand $Prompt
         if ($Command.contains("I do not know")) {
-            Write-Host $Command
+            Write-Output $Command
             Return
         }
     }
@@ -54,7 +54,7 @@ function Please {
 
 function Test-ApiKey {
     if ($null -eq $env:OPENAI_API_KEY) {
-        Write-Host "`u{1F50E} Api key missing. See https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key"
+        Write-Output "`u{1F50E} Api key missing. See https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key"
         $Key = Read-Host "Please provide the api key"
 
         if ([string]::IsNullOrWhiteSpace($Key)) {
@@ -64,7 +64,7 @@ function Test-ApiKey {
     }
 }
 
-function Get-Command([string]$Prompt) {
+function Get-PwshCommand([string]$Prompt) {
     $Role = "You translate the input given into PowerShell command. You may not use natural language, but only a PowerShell commands as answer. Do not use markdown. Do not quote the whole output. If you do not know the answer, answer only with 'I do not know'"
 
     $Payload = @{
@@ -80,9 +80,9 @@ function Get-Command([string]$Prompt) {
 
 function Show-Menu($Command) {
     $Title = "`u{1F523} Command:`n   $Command"
-    
+
     $Question = "`u{2753} What should I do?"
-    
+
     $OptionAbort = [ChoiceDescription]::new('&Abort')
     $OptionCopy = [ChoiceDescription]::new('&Copy')
     $OptionInvoke = [ChoiceDescription]::new('&Invoke')
@@ -93,21 +93,21 @@ function Show-Menu($Command) {
 
 function Invoke-Action ($Action) {
     switch ($Action) {
-        0 { 
-            Write-Host "`u{274C} Aborting"
+        0 {
+            Write-Output "`u{274C} Aborting"
         }
         1 {
-            Write-Host "`u{00A9} Copying to clipboard"
+            Write-Output "`u{00A9} Copying to clipboard"
             Set-Clipboard -Value $Command
         }
         2 {
-            Write-Host "`u{25B6} Invoking command"
-            Invoke-Expression $Command 
+            Write-Output "`u{25B6} Invoking command"
+            Invoke-Expression $Command
         }
         Default {
-            Write-Host "Invalid action"
+            Write-Output "Invalid action"
         }
-    } 
+    }
 }
 
 function Get-CommandExplanation([string]$Command) {
@@ -121,7 +121,7 @@ function Get-CommandExplanation([string]$Command) {
         )
     }
 
-    Return Invoke-OpenAIRequest $Payload    
+    Return Invoke-OpenAIRequest $Payload
 }
 
 function Invoke-OpenAIRequest($Payload) {
@@ -133,12 +133,12 @@ function Invoke-OpenAIRequest($Payload) {
     }
 
     try {
-        $Response = Invoke-RestMethod -Uri $Uri -Method Post -Headers $Headers -Body ($Payload | ConvertTo-Json)    
+        $Response = Invoke-RestMethod -Uri $Uri -Method Post -Headers $Headers -Body ($Payload | ConvertTo-Json)
     }
     catch {
         Write-Error "Received $($_.Exception.Response.ReasonPhrase): $($_.Exception.Response.Content | ConvertTo-Json)"
     }
-    
+
     Return $Response.choices[0].message.content
 }
 
