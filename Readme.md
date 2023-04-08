@@ -9,7 +9,7 @@ The initial approach to `ChatGPT please convert the bash script to pwsh` did not
 Same as [Please CLI](https://github.com/TNG/please-cli/), it translates natural language into PowerShell commands with the help of GPT:
 
 ```
-Please "Get all files in current directory that are larger than 1 MB"
+Please "Get all files in the current directory that are larger than 1 MB"
 
 🔣 Command:
    Get-ChildItem -Path . -File | Where-Object { $_.Length -gt 1MB }
@@ -20,7 +20,7 @@ Please "Get all files in current directory that are larger than 1 MB"
 It can also explain commands:
 
 ```
-Please -e "Get-ChildItem -Path . -File | Where-Object { $_.Length -gt 1MB }"
+Please -explain "Get-ChildItem -Path . -File | Where-Object { $_.Length -gt 1MB }"
 ☝ The command lists all the files in the current directory with a file size greater than 1MB.
 
 🔣 Command:
@@ -34,12 +34,12 @@ For help and parameter explanation run `Get-Help Please`.
 
 ## Prerequisites
 
-You need an [OpenAI Api Key](https://platform.openai.com/account/api-keys).
+You need an [OpenAI API key](https://platform.openai.com/account/api-keys) and access to GPT 3.5 Turbo.
 
 ## Installation
 
-For now copy the module `PleasePwsh` in one of your module folders and set the OpenAI Api Key as environment variable.
+For now copy the folder `PleasePwsh` in one of your module folders and set the OpenAI API key as environment variable.
 - Find module folders with `$ENV:PSModulePath -Split ';'`
-- Set environment variable in PowerShell profile
+- Set environment variable permanently in PowerShell profile
   - Open profile `Code $PROFILE`
-  - Set `$ENV:OPENAI_API_KEY = <YOUR_API_KEY>`
+  - Add a line `$ENV:OPENAI_API_KEY = <YOUR_API_KEY>`
