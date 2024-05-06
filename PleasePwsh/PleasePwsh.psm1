@@ -8,6 +8,48 @@ Set-PSDebug -Strict
 $ErrorActionPreference = "Stop"
 $ProgressPreference = "SilentlyContinue"
 
+function Get-OpenAIApiKey {
+    if ($env:PLEASE_OPENAI_API_KEY) {
+        return $env:PLEASE_OPENAI_API_KEY
+    }
+    if ($env:OPENAI_API_KEY) {
+        return $env:OPENAI_API_KEY
+    }
+    return $null
+}
+
+function Get-OpenAIModel {
+    if ($env:PLEASE_OPENAI_CHAT_MODEL) {
+        return $env:PLEASE_OPENAI_CHAT_MODEL
+    }
+    # There is no openai compatible environment variable to set a default model
+    return "gpt-3.5-turbo"
+}
+
+function Get-OpenAIBaseUrl {
+    if ($env:PLEASE_OPENAI_API_BASE) {
+        return $env:PLEASE_OPENAI_API_BASE
+    }
+    if ($env:OPENAI_API_BASE) {
+        return $env:OPENAI_API_BASE
+    }
+    return "https://api.openai.com"
+}
+
+function Get-OpenAIApiVersion {
+    if ($env:PLEASE_OPENAI_API_VERSION) {
+        return $env:PLEASE_OPENAI_API_VERSION
+    }
+    if ($env:OPENAI_API_VERSION) {
+        return $env:OPENAI_API_VERSION
+    }
+    return "v1"
+}
+
+function Get-OpenAIBaseUrlWithVersion {
+    return "$(Get-OpenAIBaseUrl)/$(Get-OpenAIApiVersion)"
+}
+
 <#
 .SYNOPSIS
 Translates a prompt into a PowerShell command using OpenAI GPT.
@@ -53,7 +95,7 @@ function Please {
 }
 
 function Test-ApiKey {
-    if ($null -eq $env:OPENAI_API_KEY) {
+    if ($null -eq $(Get-OpenAIApiKey)) {
         Write-Output "`u{1F50E} Api key missing. See https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key"
         $Key = Read-Host "Please provide the api key"
 
@@ -68,7 +110,7 @@ function Get-PwshCommand([string]$Prompt) {
     $Role = "You translate the input given into PowerShell command. You may not use natural language, but only a PowerShell commands as answer. Do not use markdown. Do not quote the whole output. If you do not know the answer, answer only with 'I do not know'"
 
     $Payload = @{
-        'model'    = "gpt-3.5-turbo"
+        'model'    = Get-OpenAIModel
         'messages' = @(
             @{ 'role' = 'system'; 'content' = $Role },
             @{ 'role' = 'user'; 'content' = $Prompt }
@@ -115,7 +157,7 @@ function Get-CommandExplanation([string]$Command) {
 
     $Payload = @{
         'max_tokens' = 100
-        'model'      = "gpt-3.5-turbo"
+        'model'      = Get-OpenAIModel
         'messages'   = @(
             @{ 'role' = 'user'; 'content' = $Prompt }
         )
@@ -125,11 +167,11 @@ function Get-CommandExplanation([string]$Command) {
 }
 
 function Invoke-OpenAIRequest($Payload) {
-    $Uri = "https://api.openai.com/v1/chat/completions"
+    $Uri = "$(Get-OpenAIBaseUrlWithVersion)/chat/completions"
 
     $Headers = @{
         'Content-Type'  = 'application/json'
-        'Authorization' = "Bearer $env:OPENAI_API_KEY"
+        'Authorization' = "Bearer $(Get-OpenAIApiKey)"
     }
 
     try {
