@@ -42,3 +42,19 @@ Resolves #7
 ```
 
 Furthermore, commits must be signed off according to the [DCO](DCO).
+
+
+### Testing
+
+Install and set up [Pester](https://pester.dev/docs/quick-start).
+
+```pwsh
+Install-Module Pester -Force
+Import-Module Pester -PassThru
+```
+
+Run the tests with Pester:
+
+```pwsh
+Invoke-Pester -Path .\Tests
+```

@@ -46,3 +46,17 @@ Install-Module -Name PleasePwsh
 Set the OpenAI API key as environment variable.
 - Open PowerShell profile: `Code $PROFILE`
 - Add a line with your API key: `$ENV:OPENAI_API_KEY = <YOUR_API_KEY>`
+
+
+## Configuration
+
+You can use the following OpenAI compatible environment variables:
+* `OPENAI_API_KEY` - Your OpenAI API key
+* `OPENAI_API_BASE` - The base URL for the OpenAI API
+* `OPENAI_API_VERSION` - The version of the OpenAI API
+
+You can use the more specific environment variables if you do not want to change OpenAI settings globally:
+* `PLEASE_OPENAI_API_KEY` - Your OpenAI API key
+* `PLEASE_OPENAI_API_BASE` - The base URL for the OpenAI API
+* `PLEASE_OPENAI_API_VERSION` - The version of the OpenAI API
+* `PLEASE_OPENAI_CHAT_MODEL` - The chat model to use
