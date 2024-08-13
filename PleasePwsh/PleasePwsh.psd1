@@ -8,7 +8,7 @@
     Description       = 'Translates a prompt into a PowerShell command using OpenAI GPT.'
     PrivateData       = @{
         PSData = @{
-            Tags       = @('PowerShell', 'GPT', 'OpenAI')
+            Tags       = @('PowerShell', 'GPT', 'OpenAI', 'ai', 'translate', 'bash', 'windows')
             ProjectUri = 'https://github.com/TNG/please-pwsh'
         }
     }
